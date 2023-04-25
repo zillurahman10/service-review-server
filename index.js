@@ -54,6 +54,21 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/review', async (req, res) => {
+            const email = req.query.email
+            const query = { email: email }
+            const review = await reviewsCollection.findOne(query).toArray()
+            res.send(review)
+        })
+
+        app.post('/services', async (req, res) => {
+            const review = req.body
+            const result = await serviceCollection.insertOne(review)
+            console.log(result);
+            review._id = result.insertedId
+            res.send(result)
+        })
+
     } finally {
 
     }
