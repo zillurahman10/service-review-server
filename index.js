@@ -25,6 +25,7 @@ const client = new MongoClient(uri, { serverApi: { version: ServerApiVersion.v1,
 async function run() {
     try {
         const serviceCollection = client.db('Zillur-Youtuber').collection('services');
+        const reviewsCollection = client.db('Zillur-Youtuber').collection('reviews')
 
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find({})
@@ -36,6 +37,20 @@ async function run() {
             const id = req.params.id
             const query = { _id: new ObjectId(id) }
             const result = await serviceCollection.findOne(query)
+            res.send(result)
+        })
+
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({})
+            const reviews = await cursor.toArray()
+            res.send(reviews)
+        })
+
+        app.post('/reviews', async (req, res) => {
+            const review = req.body
+            const result = await reviewsCollection.insertOne(review)
+            console.log(result);
+            review._id = result.insertedId
             res.send(result)
         })
 
